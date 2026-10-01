@@ -26,6 +26,9 @@ class EntryPayload(BaseModel):
 
     values: dict[str, Any] = Field(default_factory=dict)
     remark: str | None = None
+    # 主数据保存专用：版本锁（读取时的版本号）与幂等请求标识
+    base_version: int | None = None
+    request_id: str | None = None
 
 
 
