@@ -12,7 +12,7 @@ router = APIRouter(prefix="/api/patrol", tags=["日常巡查"])
 
 service = PatrolService()
 
-LIST_FIELDS = ["巡查编号", "巡查路段", "巡查日期", "巡查人员", "巡查车辆", "发现问题", "处置措施", "巡查状态"]
+LIST_FIELDS = ["巡查编号", "巡查路段", "桩号区间", "巡查日期", "巡查人员", "巡查车辆", "发现问题", "处置措施", "巡查状态"]
 STATUSES = ["待巡查", "巡查中", "已完成", "已复核"]
 
 

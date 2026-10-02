@@ -70,7 +70,7 @@ import { request } from '@/api/client'
 type Row = Record<string, string | number | null>
 
 const ENDPOINT = '/api/patrol'
-const columns = ["巡查编号", "巡查路段", "巡查日期", "巡查人员", "巡查车辆", "发现问题", "处置措施", "巡查状态"]
+const columns = ["巡查编号", "巡查路段", "桩号区间", "巡查日期", "巡查人员", "巡查车辆", "发现问题", "处置措施", "巡查状态"]
 const actions = ["开始巡查", "完成巡查", "复核确认"]
 const statuses = ["待巡查", "巡查中", "已完成", "已复核"]
 const stats = [{"label": "今日巡查", "value": 0}, {"label": "待巡查路段", "value": 0}, {"label": "发现问题", "value": 0}]

@@ -1,4 +1,8 @@
-"""路面病害业务规则：状态流转、字段校验与筛选口径都收在这里。"""
+"""路面病害业务规则：状态流转、字段校验与筛选口径都收在这里。
+
+病害空间索引是路段主数据的派生缓存：路段边界改动提交时由路段服务在同一事务里
+失效，这里按当前主数据重建，保证病害归属与最新审定边界一致。
+"""
 from __future__ import annotations
 
 from typing import Any
@@ -10,6 +14,8 @@ REQUIRED_FIELDS = ["病害编号", "所属路段", "病害类型"]
 STATUS_ORDER = ["待修复", "修复中", "已修复", "已验收"]
 ACTION_RULES = {"派发修复": "修复中", "标记修复": "已修复", "验收通过": "已验收"}
 NEGATIVE_ACTIONS = []
+
+SPATIAL_INDEX = "pavement_spatial_index"
 
 
 class PavementService:
@@ -32,6 +38,23 @@ class PavementService:
 
     def get_entry(self, entry_id: int) -> dict[str, Any] | None:
         return store.find(MODULE, entry_id)
+
+    def spatial_index(self) -> dict[str, list[dict[str, Any]]]:
+        """病害空间索引：按路段编号归集病害区间，随路段主数据事务失效重建。"""
+
+        def build() -> dict[str, list[dict[str, Any]]]:
+            index: dict[str, list[dict[str, Any]]] = {}
+            for row in store.rows(MODULE):
+                key = str(row.get("路段编号") or row.get("所属路段") or "未关联")
+                index.setdefault(key, []).append({
+                    "病害id": row.get("id"),
+                    "病害编号": row.get("病害编号"),
+                    "所属路段": row.get("所属路段"),
+                    "起止桩号": row.get("起止桩号"),
+                })
+            return index
+
+        return store.derived(SPATIAL_INDEX, build)
 
     def create_entry(self, values: dict[str, Any]) -> tuple[dict[str, Any] | None, list[str]]:
         missing = [field for field in REQUIRED_FIELDS if not str(values.get(field) or "").strip()]

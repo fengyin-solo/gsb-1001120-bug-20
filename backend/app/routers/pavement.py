@@ -16,6 +16,19 @@ LIST_FIELDS = ["病害编号", "所属路段", "病害类型", "严重程度", "
 STATUSES = ["待修复", "修复中", "已修复", "已验收"]
 
 
+@router.get("/spatial_index")
+def spatial_index() -> dict[str, Any]:
+    """病害空间索引：按路段归集病害区间，随路段主数据事务同步失效重建。"""
+    return {"index": service.spatial_index()}
+
+
+@router.get("/export")
+def export_entries() -> dict[str, Any]:
+    """导出路面病害清单：返回当前过滤条件下的全量数据。"""
+    items, total = service.list_entries(page=1, size=10000)
+    return {"module": "pavement", "total": total, "items": items}
+
+
 @router.get("", response_model=PageResult[dict])
 def list_entries(
     keyword: str | None = Query(default=None, description="按病害编号检索"),
@@ -56,10 +69,3 @@ def run_action(entry_id: int, payload: EntryPayload) -> ActionResult:
     if entry is None:
         return ActionResult(ok=False, message=message)
     return ActionResult(ok=True, message=message, entry=entry)
-
-
-@router.get("/export")
-def export_entries() -> dict[str, Any]:
-    """导出路面病害清单：返回当前过滤条件下的全量数据。"""
-    items, total = service.list_entries(page=1, size=10000)
-    return {"module": "pavement", "total": total, "items": items}

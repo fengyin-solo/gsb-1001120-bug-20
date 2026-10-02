@@ -12,7 +12,7 @@ router = APIRouter(prefix="/api/vehicle", tags=["养护车辆"])
 
 service = VehicleService()
 
-LIST_FIELDS = ["车辆编号", "车辆类型", "车牌号", "所属单位", "年检日期", "驾驶员", "当前里程", "车辆状态"]
+LIST_FIELDS = ["车辆编号", "车辆类型", "车牌号", "所属单位", "作业路段", "任务区间", "年检日期", "驾驶员", "当前里程", "车辆状态"]
 STATUSES = ["在库", "出车作业", "维修", "报废"]
 
 

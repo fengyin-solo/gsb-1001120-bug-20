@@ -70,7 +70,7 @@ import { request } from '@/api/client'
 type Row = Record<string, string | number | null>
 
 const ENDPOINT = '/api/vehicle'
-const columns = ["车辆编号", "车辆类型", "车牌号", "所属单位", "年检日期", "驾驶员", "当前里程", "车辆状态"]
+const columns = ["车辆编号", "车辆类型", "车牌号", "所属单位", "作业路段", "任务区间", "年检日期", "驾驶员", "当前里程", "车辆状态"]
 const actions = ["派车出车", "收车归库", "送修车辆"]
 const statuses = ["在库", "出车作业", "维修", "报废"]
 const stats = [{"label": "在库车辆", "value": 0}, {"label": "出车车辆", "value": 0}, {"label": "维修车辆", "value": 0}]

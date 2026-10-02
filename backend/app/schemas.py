@@ -26,6 +26,8 @@ class EntryPayload(BaseModel):
 
     values: dict[str, Any] = Field(default_factory=dict)
     remark: str | None = None
+    # 乐观锁版本号：保存主数据时必带，与服务端当前版本不一致即拒绝
+    version: int | None = None
 
 
 
@@ -46,12 +48,13 @@ class PatrolEntry(BaseModel):
 
     field_0: str | None = None  # 巡查编号
     field_1: str | None = None  # 巡查路段
-    field_2: str | None = None  # 巡查日期
-    field_3: str | None = None  # 巡查人员
-    field_4: str | None = None  # 巡查车辆
-    field_5: str | None = None  # 发现问题
-    field_6: str | None = None  # 处置措施
-    field_7: str | None = None  # 巡查状态
+    field_2: str | None = None  # 桩号区间
+    field_3: str | None = None  # 巡查日期
+    field_4: str | None = None  # 巡查人员
+    field_5: str | None = None  # 巡查车辆
+    field_6: str | None = None  # 发现问题
+    field_7: str | None = None  # 处置措施
+    field_8: str | None = None  # 巡查状态
 
 class PavementEntry(BaseModel):
     """病害记录明细结构。"""
@@ -228,10 +231,12 @@ class VehicleEntry(BaseModel):
     field_1: str | None = None  # 车辆类型
     field_2: str | None = None  # 车牌号
     field_3: str | None = None  # 所属单位
-    field_4: str | None = None  # 年检日期
-    field_5: str | None = None  # 驾驶员
-    field_6: str | None = None  # 当前里程
-    field_7: str | None = None  # 车辆状态
+    field_4: str | None = None  # 作业路段
+    field_5: str | None = None  # 任务区间
+    field_6: str | None = None  # 年检日期
+    field_7: str | None = None  # 驾驶员
+    field_8: str | None = None  # 当前里程
+    field_9: str | None = None  # 车辆状态
 
 class MaterialEntry(BaseModel):
     """养护材料明细结构。"""

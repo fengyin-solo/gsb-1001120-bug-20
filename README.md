@@ -74,3 +74,20 @@ npm run dev
   `backend/app/routers/<模块>.py`，业务规则在 `backend/app/services/<模块>.py`。
 - 列表接口统一返回 `{ items, total, page, size }`，动作接口统一返回 `{ ok, message }`。
 - 状态流转只允许在 `app/services` 里改，路由层不做业务判断。
+
+## 路段主数据处理线
+
+路段是主数据，名称或起止桩号改动走 `PUT /api/road_section/{id}`，规则如下：
+
+- **事务回写**：主表更新与巡查台账、病害空间索引、工程待办、车辆任务的回写在同一事务里，
+  任一环节失败整体回滚；地图区间、病害空间索引等派生缓存随事务一并失效重建。
+- **版本锁**：保存必须带当前 `版本` 号，过期提交返回 409，不能覆盖已确认边界。
+- **幂等**：同一改动重复提交按改动摘要识别，直接确认，不生成第二份路段版本。
+- **快照**：现行桩号以最新审定公告为准；已完成/已复核的历史巡查保留原路段快照。
+- **迁移拆分**：存量病害跨出新区间的部分自动迁移到承接路段并拆分记录，
+  无承接路段的余量挂回本路段并标异常待人工核定。
+- 辅助接口：`GET /api/road_section/map_intervals`（地图区间）、
+  `GET /api/road_section/{id}/versions`（版本台账）、
+  `GET /api/pavement/spatial_index`（病害空间索引）。
+
+后端回归测试：`cd backend && python3 -m pytest tests/`。
